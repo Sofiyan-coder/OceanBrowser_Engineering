@@ -20,6 +20,8 @@ httpScheme://example.orgHostname/index.htmlPath
 ![image](https://github.com/user-attachments/assets/993f8e31-9ff9-4848-b933-d59946e24d3a)
 
 Figure 1: The syntax of URLs.
+
+1.Connecting to a Server
 ---
 
 A URL has three parts (see Figure 1): the scheme explains
