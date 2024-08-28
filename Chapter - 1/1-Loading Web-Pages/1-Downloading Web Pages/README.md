@@ -1,5 +1,3 @@
-![image](https://github.com/user-attachments/assets/13fa9c58-c583-4b66-af61-07f1f050df59)
-
 
   Chapter 1 of Web Browser Engineering.
   &lt;
