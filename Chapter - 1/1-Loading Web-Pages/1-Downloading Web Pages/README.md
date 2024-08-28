@@ -213,13 +213,16 @@ this in C++ or Java.
 Let’s start with the scheme, which is separated from the rest of the
 URL by ://. Our browser only supports http, so
 let’s check that, too:
+```ruby
 class URL:
     def __init__(self, url):
         self.scheme, url = url.split(&quot;://&quot;, 1)
         assert self.scheme == &quot;http&quot;
+```
 Now we must separate the host from the path. The host comes before
 the first /, while the path is that slash and everything
 after it:
+```ruby
 class URL:
     def __init__(self, url):
         # ...
@@ -227,6 +230,7 @@ class URL:
             url = url + &quot;/&quot;
         self.host, url = url.split(&quot;/&quot;, 1)
         self.path = &quot;/&quot; + url
+```
 (When you see a code block with a # ..., like this one,
 that means you’re adding code to an existing method or block.) The
 split(s, n) method splits a string at the first
@@ -236,9 +240,11 @@ That (optional) slash is part of the path.
 Now that the URL has the host and
 path fields, we can download the web page at that URL.
 We’ll do that in a new method, request:
+```ruby
 class URL:
     def request(self):
         # ...
+```
 Note that you always need to write the self parameter
 for methods in Python. In the future, I won’t always make such a big
 deal out of defining a method—if you see a code block with code in a
@@ -277,7 +283,7 @@ Python, the flags we pass are defaults, so you can actually call
 socket.socket(); I’m keeping the flags here in case you’re
 following along in another language.
 import socket
-
+```ruby
 class URL:
     def request(self):
         s = socket.socket(
@@ -285,13 +291,16 @@ class URL:
             type=socket.SOCK_STREAM,
             proto=socket.IPPROTO_TCP,
         )
+```
 Once you have a socket, you need to tell it to connect to the other
 computer. For that, you need the host and a port. The port
 depends on the protocol you are using; for now it should be 80.
+```ruby
 class URL:
     def request(self):
         # ...
         s.connect((self.host, 80))
+```
 This talks to example.org to set up the connection and
 prepare both computers to exchange data.
 
@@ -308,6 +317,7 @@ have different numbers of arguments.
 5.Request and Response
 Now that we have a connection, we make a request to the other server.
 To do so, we send it some data using the send method:
+```ruby
 class URL:
     def request(self):
         # ...
@@ -315,6 +325,7 @@ class URL:
         request += &quot;Host: {}\r\n&quot;.format(self.host)
         request += &quot;\r\n&quot;
         s.send(request.encode(&quot;utf8&quot;))
+```
 The send method just sends the request to the
 server.send
 actually returns a number, in this case 47. That tells you
@@ -355,10 +366,12 @@ arrive. However, in Python you can use the makefile helper
 function, which hides the loop:If you’re in another language, you might only have
 socket.read available. You’ll need to write the loop,
 checking the socket status, yourself.
+```ruby
 class URL:
     def request(self):
         # ...
         response = s.makefile(&quot;r&quot;, encoding=&quot;utf8&quot;, newline=&quot;\r\n&quot;)
+```
 Here, makefile returns a file-like object containing
 every byte we receive from the server. I am instructing Python to turn
 those bytes into a string using the utf8 encoding,
@@ -377,17 +390,20 @@ supports, but it’s better to just let the browser render the returned
 body, because servers will generally output a helpful and user-readable
 HTML error page even for error codes. This is another way in which the
 web is easy to implement incrementally.
+```ruby
 class URL:
     def request(self):
         # ...
         statusline = response.readline()
         version, status, explanation = statusline.split(&quot; &quot;, 2)
+```
 Note that I do not check that the server’s version of HTTP
 is the same as mine; this might sound like a good idea, but there are a
 lot of misconfigured servers out there that respond in HTTP 1.1 even
 when you talk to them in HTTP 1.0.Luckily the protocols are similar enough to not cause
 confusion.
 After the status line come the headers:
+```ruby
 class URL:
     def request(self):
         # ...
@@ -397,6 +413,7 @@ class URL:
             if line == &quot;\r\n&quot;: break
             header, value = line.split(&quot;:&quot;, 1)
             response_headers[header.casefold()] = value.strip()
+```
 For the headers, I split each line at the first colon and fill in a
 map of header names to header values. Headers are case-insensitive, so I
 normalize them to lower case.I used casefold
@@ -409,23 +426,29 @@ headers are especially important because they tell us that the data
 we’re trying to access is being sent in an unusual way. Let’s make sure
 none of those are present.Exercise 1-9 describes how your browser should handle these
 headers if they are present.
+```ruby
 class URL:
     def request(self):
         # ...
         assert &quot;transfer-encoding&quot; not in response_headers
         assert &quot;content-encoding&quot; not in response_headers
+```
 The usual way to send the data, then, is everything after the
 headers:
+```ruby
 class URL:
     def request(self):
         # ...
         content = response.read()
         s.close()
+```
 It’s the body that we’re going to display, so let’s return that:
+```ruby
 class URL:
     def request(self):
         # ...
         return content
+```
 Now let’s actually display the text in the response body.
 
 
@@ -454,6 +477,7 @@ on the last line, it is likely because you are running Python 2 instead
 of Python 3. Make sure you are using Python 3. I’ll do
 this in a new function, show:Note that this is a global
 function and not the URL class.
+```ruby
 def show(body):
     in_tag = False
     for c in body:
@@ -463,6 +487,7 @@ def show(body):
             in_tag = False
         elif not in_tag:
             print(c, end=&quot;&quot;)
+```
 This code is pretty complex. It goes through the request body
 character by character, and it has two states: in_tag, when
 it is currently between a pair of angle brackets, and
@@ -474,14 +499,18 @@ character, which it otherwise would.
 We can now load a web page just by stringing together
 request and show:Like show, this
 is a global function.
+```ruby
 def load(url):
     body = url.request()
     show(body)
+```
 Add the following code to run load from the command
 line:
+```ruby
 if __name__ == &quot;__main__&quot;:
     import sys
     load(URL(sys.argv[1]))
+```
 The first line is Python’s version of a main function,
 run only when executing this script from the command line. The code
 reads the first argument (sys.argv[1]) from the command
@@ -524,9 +553,11 @@ it to example.org. To encrypt the connection, you use
 ssl.create_default_context to create a context
 ctx and use that context to wrap the socket
 s:
+```ruby
 import ssl
 ctx = ssl.create_default_context()
 s = ctx.wrap_socket(s, server_hostname=host)
+```
 Note that wrap_socket returns a new socket, which I save
 back into the s variable. That’s because you don’t want to
 send any data over the original socket; it would be unencrypted and also
@@ -540,16 +571,19 @@ ssl package on most websites.
 
 Let’s try to take this code and add it to request.
 First, we need to detect which scheme is being used:
+```ruby
 class URL:
     def __init__(self, url):
         self.scheme, url = url.split(&quot;://&quot;, 1)
         assert self.scheme in [&quot;http&quot;, &quot;https&quot;]
         # ...
+```
 (Note that here you’re supposed to replace the existing scheme
 parsing code with this new code. It’s usually clear from context, and
 the code itself, what you need to replace.)
 Encrypted HTTP connections usually use port 443 instead of port
 80:
+```ruby
 class URL:
     def __init__(self, url):
         # ...
@@ -557,13 +591,17 @@ class URL:
             self.port = 80
         elif self.scheme == &quot;https&quot;:
             self.port = 443
+```
 We can use that port when creating the socket:
+```ruby
 class URL:
     def request(self):
         # ...
         s.connect((self.host, self.port))
         # ...
+```
 Next, we’ll wrap the socket with the ssl library:
+``` ruby
 class URL:
     def request(self):
         # ...
@@ -571,6 +609,7 @@ class URL:
             ctx = ssl.create_default_context()
             s = ctx.wrap_socket(s, server_hostname=self.host)
         # ...
+```
 Your browser should now be able to connect to HTTPS sites.
 While we’re at it, let’s add support for custom ports, which are
 specified in a URL by putting a colon after the host name, as in Figure
@@ -582,27 +621,31 @@ specified in a URL by putting a colon after the host name, as in Figure
 Figure 6: Where the port goes in a URL.
 
 If the URL has a port we can parse it out and use it:
+```ruby
 class URL:
     def __init__(self, url):
         # ...
         if &quot;:&quot; in self.host:
             self.host, port = self.host.split(&quot;:&quot;, 1)
             self.port = int(port)
+```
 Custom ports are handy for debugging. Python has a built-in web
 server you can use to serve files on your computer. For example, if you
 run
-python3 -m http.server 8000 -d /some/directory
+
+```python3 -m http.server 8000 -d /some/directory ```
 then going to http://localhost:8000/ should show you all
 the files in that directory. This is a good way to test your
 browser.
 
 At this point you should be able to run your program on any web page.
 Here is what it should output for a simple example:
-
+```
 
     This is a simple
     web page with some
     text in it.
+```
 
 
 8.Summary
@@ -627,15 +670,11 @@ but it already has some of the core capabilities of a browser.
 9.Outline
 The complete set of functions, classes, and methods in our browser
 should look something like this:
-
+```ruby
 class URL:
-    def __init__(url)
+    def __init__(url)   def show(body)
 
-    def request()
-
-
-def show(body)
-
-def load(url)
+    def request()       def load(url)
+```
 
 View next Readme
