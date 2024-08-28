@@ -91,7 +91,7 @@ and was able to connect to it.The line about escape characters is just instructi
 using obscure telnet features. You can now
 talk to example.org.
 
-##2.Requesting Information
+2.Requesting Information
 ---
 Once it’s connected, the browser requests information from the server
 by giving its path, the path being the part of a URL that comes
@@ -134,7 +134,8 @@ telnet (hit Enter twice after typing the two lines of the
 request) and you should get a response from
 example.org.
 
-##3.The Server’s Response
+3.The Server’s Response
+---
 
 The server’s response starts with the line in Figure 3.
 
@@ -201,7 +202,8 @@ Figure 4: An HTTP request and response
 pair are how a web browser gets web pages from a web
 server.
 
-##4.Telnet in Python
+4.Telnet in Python
+---
 So far we’ve communicated with another computer using
 telnet. But it turns out that telnet is quite
 a simple program, and we can do the same programmatically. It’ll require
@@ -465,7 +467,8 @@ Now let’s actually display the text in the response body.
 
 
 
-##6.Displaying the HTML
+6.Displaying the HTML
+---
 The HTML code in the response body defines the content you see in
 your browser window when you go to
 http://example.org/index.html. I’ll be talking much, much
@@ -532,7 +535,8 @@ python3 browser.py http://example.org/
 You should see some short text welcoming you to the official example
 web page. You can also try using it on this chapter!
 
-##7.Encrypted Connections
+7.Encrypted Connections
+---
 So far, our browser supports the http scheme. That’s a
 pretty common scheme. But more and more websites are migrating to the
 https scheme, and many websites require it.
@@ -660,7 +664,8 @@ Here is what it should output for a simple example:
 ```
 
 
-##8.Summary
+8.Summary
+---
 This chapter went from an empty file to a rudimentary web browser
 that can:
 
@@ -679,7 +684,8 @@ but it already has some of the core capabilities of a browser.
 
 
 
-##9.Outline
+9.Outline
+---
 The complete set of functions, classes, and methods in our browser
 should look something like this:
 ```ruby
