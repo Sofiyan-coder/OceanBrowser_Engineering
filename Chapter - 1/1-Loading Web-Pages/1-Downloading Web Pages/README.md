@@ -1,54 +1,9 @@
-
-  Downloading Web Pages | Web Browser Engineering
-
-
-
-
-
-
-
-Downloading Web Pages
-Twitter ·
-Blog ·
-Patreon ·
-Discussions
-
+![image](https://github.com/user-attachments/assets/13fa9c58-c583-4b66-af61-07f1f050df59)
 
 
   Chapter 1 of Web Browser Engineering.
   &lt;
   &gt;
-
-
-
-
-
-
-    Preorder »
-
-
-    Web Browser Engineering will be out soon.
-    Pre-order now »
-
-
-
-
-
-
-Connecting to a Server
-Requesting Information
-The
-Server’s Response
-Telnet in
-Python
-Request and Response
-Displaying the HTML
-Encrypted Connections
-Summary
-Outline
-Exercises
-
-
 
 A web browser displays information identified by a URL. And the first
 step is to use that URL to connect to and download information from a
@@ -63,8 +18,7 @@ particular web page that the browser should visit.
 
 httpScheme://example.orgHostname/index.htmlPath
 
-
-
+![image](https://github.com/user-attachments/assets/993f8e31-9ff9-4848-b933-d59946e24d3a)
 
 Figure 1: The syntax of URLs.
 
@@ -133,30 +87,14 @@ and was able to connect to it.The line about escape characters is just instructi
 using obscure telnet features. You can now
 talk to example.org.
 
-The URL syntax is defined in RFC 3987, whose first
-author is Tim Berners-Lee—no surprise there! The second author is Roy
-Fielding, a key contributor to the design of HTTP and also well known
-for describing the Representational State Transfer (REST) architecture
-of the web in his Ph.D. thesis,
-which explains how REST allowed the web to grow in a decentralized way.
-Today, many services provide “RESTful APIs” that also follow these
-principles, though there does seem to be some confusion
-about it.
-
-Requesting Information
+2.Requesting Information
 Once it’s connected, the browser requests information from the server
 by giving its path, the path being the part of a URL that comes
 after the host name, like /index.html. The structure of the
 request is shown in Figure 2. Type this into telnet to try
 it.
 
-
-GETMethod /index.htmlPath HTTP/1.0HTTP Version
-HostHeader: example.orgValue
-
-
-
-
+![image](https://github.com/user-attachments/assets/a4d539ca-f9ae-4593-8ebe-b952c8824681)
 
 Figure 2: An annotated HTTP GET request.
 
@@ -191,26 +129,10 @@ telnet (hit Enter twice after typing the two lines of the
 request) and you should get a response from
 example.org.
 
-HTTP/1.0 is standardized in RFC 1945, and HTTP/1.1 in
-RFC 2616. HTTP was
-designed to be simple to understand and implement, making it easy for
-any kind of computer to adopt it. It’s no coincidence that you can type
-HTTP directly into telnet! Nor is it an accident that HTTP
-is a “line-based protocol”, using plain text and newlines, similar to
-the Simple Mail Transfer Protocol (SMTP)
-for email. Ultimately, the whole pattern derives from early computers
-only having line-based text input. In fact, one of the first two
-browsers had a line-mode
-UI.
-
-The Server’s Response
+3.The Server’s Response
 The server’s response starts with the line in Figure 3.
 
-
-HTTP/1.0HTTP Version 200Response Code OKResponse Description
-
-
-
+![image](https://github.com/user-attachments/assets/7f4c7586-d198-44ff-91ba-262d1bcbeb54)
 
 Figure 3: Annotated first line of an HTTP response.
 
@@ -224,11 +146,11 @@ scheme:The status text
 like OK can actually be anything and is just there for
 humans, not for machines.
 
-the 100s are informational messages;
-the 200s mean you were successful;
-the 300s request follow-up action (usually a redirect);
-the 400s mean you sent a bad request;
-the 500s mean the server handled the request badly.
+• the 100s are informational messages;
+• the 200s mean you were successful;
+• the 300s request follow-up action (usually a redirect);
+• the 400s mean you sent a bad request;
+• the 500s mean the server handled the request badly.
 
 Note the genius of having two sets of error codes (400s and 500s) to
 tell you who is at fault, the server or the browser.More precisely, who the server
@@ -265,24 +187,13 @@ The HTTP request/response transaction is summarized in Figure 4.
 Let’s now switch gears from making manual connections to Python.
 
 
+![image](https://github.com/user-attachments/assets/a1b1942f-de1c-4636-b377-f85a7b95c45e)
 
 Figure 4: An HTTP request and response
 pair are how a web browser gets web pages from a web
 server.
 
-
-
-Wikipedia has nice lists of HTTP headers
-and response
-codes. Some of the HTTP response codes are almost never used, like
-402
-“Payment Required”. This code was intended to be used for “digital cash
-or (micro) payment systems”. While e-commerce is alive and well without
-the response code 402, micropayments have
-not (yet?) gained much traction, even though many people (including me!)
-think they are a good idea.
-
-Telnet in Python
+4.Telnet in Python
 So far we’ve communicated with another computer using
 telnet. But it turns out that telnet is quite
 a simple program, and we can do the same programmatically. It’ll require
@@ -343,18 +254,18 @@ that socket can be used to send information back and forth. Sockets come
 in a few different kinds, because there are multiple ways to talk to
 other computers:
 
-A socket has an address family, which tells you how to find
+• A socket has an address family, which tells you how to find
 the other computer. Address families have names that begin with
 AF. We want AF_INET, but for example
 AF_BLUETOOTH is another.
-A socket has a type, which describes the sort of
+• A socket has a type, which describes the sort of
 conversation that’s going to happen. Types have names that begin with
 SOCK. We want SOCK_STREAM, which means each
 computer can send arbitrary amounts of data, but there’s also
 SOCK_DGRAM, in which case they send each other packets of
 some fixed size.DGRAM stands for “datagram”, which I imagine
 to be like a postcard.
-A socket has a protocol, which describes the steps by which
+• A socket has a protocol, which describes the steps by which
 the two computers will establish a connection. Protocols have names that
 depend on the address family, but we want IPPROTO_TCP.Newer versions of HTTP use
 something called QUIC
@@ -396,13 +307,7 @@ connect takes a single argument, and that argument is a
 pair of a host and a port. This is because different address families
 have different numbers of arguments.
 
-The “sockets” API, which Python more or less implements directly,
-derives from the original “Berkeley
-sockets” API design for 4.2 BSD Unix in 1983. Of course, Windows and
-Linux merely reimplement the API, but macOS and iOS actually do still
-use large amounts of code descended from BSD Unix.
-
-Request and Response
+5.Request and Response
 Now that we have a connection, we make a request to the other server.
 To do so, we send it some data using the send method:
 class URL:
@@ -425,6 +330,7 @@ put two \r\n newlines at the end, so that you send
 that blank line at the end of the request. If you forget that, the other
 computer will keep waiting on you to send that newline, and you’ll keep
 waiting on its response.Computers are endlessly literal-minded.
+
 Also note the encode call. When you send data, it’s
 important to remember that you are sending raw bits and bytes; they
 could form text or an image or video. But a Python string is
@@ -524,16 +430,9 @@ class URL:
         return content
 Now let’s actually display the text in the response body.
 
-The Content-Encoding
-header lets the server compress web pages before sending them. Large,
-text-heavy web pages compress well, and as a result the page loads
-faster. The browser needs to send an Accept-Encoding
-header in its request to list the compression algorithms it
-supports. Transfer-Encoding
-is similar and also allows the data to be “chunked”, which many servers
-seem to use together with compression.
 
-Displaying the HTML
+
+6.Displaying the HTML
 The HTML code in the response body defines the content you see in
 your browser window when you go to
 http://example.org/index.html. I’ll be talking much, much
@@ -594,14 +493,7 @@ python3 browser.py http://example.org/
 You should see some short text welcoming you to the official example
 web page. You can also try using it on this chapter!
 
-HTML, just like URLs and HTTP, is designed to be very easy to parse
-and display at a basic level. And in the beginning there were very few
-features in HTML, so it was possible to code up something not so much
-more fancy than what you see here, yet still display the content in a
-usable way. Even our super simple and basic HTML parser can already
-print out the text of the browser.engineering website.
-
-Encrypted Connections
+7.Encrypted Connections
 So far, our browser supports the http scheme. That’s a
 pretty common scheme. But more and more websites are migrating to the
 https scheme, and many websites require it.
@@ -616,6 +508,7 @@ to, and of course how to make sure that the browser is connecting to the
 correct host. The difference in the protocol layers involved is shown in
 Figure 5.
 
+![image](https://github.com/user-attachments/assets/1c80cba9-5663-4240-baf1-030d66dfe7dc)
 
 
 Figure 5: The difference between HTTP and
@@ -685,10 +578,7 @@ While we’re at it, let’s add support for custom ports, which are
 specified in a URL by putting a colon after the host name, as in Figure
 6.
 
-
-http://example.org:8080Port/index.html
-
-
+![image](https://github.com/user-attachments/assets/ff4373bd-3cf3-414a-96ef-60dc0455f10b)
 
 
 Figure 6: Where the port goes in a URL.
@@ -708,10 +598,6 @@ then going to http://localhost:8000/ should show you all
 the files in that directory. This is a good way to test your
 browser.
 
-TLS is pretty complicated. You can read the details in RFC 8446, but
-implementing your own is not recommended. It’s very difficult to write a
-custom TLS implementation that is not only correct but secure.
-
 At this point you should be able to run your program on any web page.
 Here is what it should output for a simple example:
 
@@ -721,27 +607,26 @@ Here is what it should output for a simple example:
     text in it.
 
 
-Summary
+8.Summary
 This chapter went from an empty file to a rudimentary web browser
 that can:
 
-parse a URL into a scheme, host, port, and path;
-connect to that host using the socket and
-ssl libraries;
-send an HTTP request to that host, including a Host
-header;
-split the HTTP response into a status line, headers, and a
-body;
-print the text (and not the tags) in the body.
+•  parse a URL into a scheme, host, port, and path;
+•  connect to that host using the socket and
+   ssl libraries;
+•  send an HTTP request to that host, including a Host
+   header;
+•  split the HTTP response into a status line, headers, and a
+   body;
+•  print the text (and not the tags) in the body.
 
 Yes, this is still more of a command-line tool than a web browser,
 but it already has some of the core capabilities of a browser.
 
 
-Close
 
 
-Outline
+9.Outline
 The complete set of functions, classes, and methods in our browser
 should look something like this:
 
@@ -755,95 +640,4 @@ def show(body)
 
 def load(url)
 
-
-
-Exercises
-1-1 HTTP/1.1. Along with Host, send the
-Connection header in the request function with
-the value close. Your browser can now declare that it is
-using HTTP/1.1. Also add a User-Agent header.
-Its value can be whatever you want—it identifies your browser to the
-host. Make it easy to add further headers in the future.
-1-2 File URLs. Add support for the file scheme,
-which allows the browser to open local files. For example,
-file:///path/goes/here should refer to the file on your
-computer at location /path/goes/here. Also make it so that,
-if your browser is started without a URL being given, some specific file
-on your computer is opened. You can use that file for quick testing.
-1-3 data. Yet another scheme is
-data, which allows inlining HTML content into the URL
-itself. Try navigating to data:text/html,Hello world! in a
-real browser to see what happens. Add support for this scheme to your
-browser. The data scheme is especially convenient for
-making tests without having to put them in separate files.
-1-4 Entities. Implement support for the less-than
-(&amp;lt;) and greater-than (&amp;gt;)
-entities. These should be printed as &lt; and
-&gt;, respectively. For example, if the HTML response was
-&amp;lt;div&amp;gt;, the show method of your
-browser should print &lt;div&gt;. Entities allow web pages
-to include these special characters without the browser interpreting
-them as tags.
-1-5 view-source. Add support for the
-view-source scheme; navigating to
-view-source:http://example.org/ should show the HTML source
-instead of the rendered page. Add support for this scheme. Your browser
-should print the entire HTML file as if it was text. You’ll want to have
-also implemented Exercise 1-4.
-1-6 Keep-alive. Implement Exercise 1-1; however, do not send
-the Connection: close header. Instead, when reading the
-body from the socket, only read as many bytes as given in the
-Content-Length header and don’t close the socket afterward.
-Instead, save the socket, and if another request is made to the same
-server reuse the same socket instead of creating a new one. This will
-speed up repeated requests to the same server, which are common.
-1-7 Redirects. Error codes in the 300 range request a
-redirect. When your browser encounters one, it should make a new request
-to the URL given in the Location header. Sometimes the
-Location header is a full URL, but sometimes it skips the
-host and scheme and just starts with a / (meaning the same
-host and scheme as the original request). The new URL might itself be a
-redirect, so make sure to handle that case. You don’t, however, want to
-get stuck in a redirect loop, so make sure to limit how many redirects
-your browser can follow in a row. You can test this with the URL http://browser.engineering/redirect, which redirects
-back to this page, and its /redirect2 and /redirect3 cousins which
-do more complicated redirect chains.
-1-8 Caching. Typically, the same images, styles, and scripts
-are used on multiple pages; downloading them repeatedly is a waste. It’s
-generally valid to cache any HTTP response, as long as it was requested
-with GET and received a 200 response.Some other status codes like
-301 and 404 can also be cached.
-Implement a cache in your browser and test it by requesting the same
-file multiple times. Servers control caches using the
-Cache-Control header. Add support for this header,
-specifically for the no-store and max-age
-values. If the Cache-Control header contains any value
-other than these two, it’s best not to cache the response.
-1-9 Compression. Add support for HTTP compression, in which
-the browser informs
-the server that compressed data is acceptable. Your browser must
-send the Accept-Encoding header with the value
-gzip. If the server supports compression, its response will
-have a Content-Encoding header with value
-gzip. The body is then compressed. Add support for this
-case. To decompress the data, you can use the decompress
-method in the gzip module. GZip data is not
-utf8-encoded, so pass "rb" to
-makefile to work with raw bytes instead. Most web servers
-send compressed data in a Transfer-Encoding called chunked.There are also a couple of
-Transfer-Encodings that compress the data. They aren’t
-commonly used. You’ll need to add support for that,
-too.
-
-
-
-
-  Chapter 1 of Web Browser Engineering.
-  &lt;
-  &gt;
-
-
-Did you find this chapter useful? Send us feedback!
-
-
-  &copy; 2018&ndash;2023 Pavel Panchekha &amp; Chris Harrelson
+View next Readme
