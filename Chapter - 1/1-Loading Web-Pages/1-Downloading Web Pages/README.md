@@ -1,5 +1,6 @@
 
-  Chapter 1 of Web Browser Engineering.
+  #Chapter 1 of Web Browser Engineering.
+  ---
   &lt;
   &gt;
 
@@ -19,6 +20,7 @@ httpScheme://example.orgHostname/index.htmlPath
 ![image](https://github.com/user-attachments/assets/993f8e31-9ff9-4848-b933-d59946e24d3a)
 
 Figure 1: The syntax of URLs.
+---
 
 A URL has three parts (see Figure 1): the scheme explains
 how to get the information; the host name explains
@@ -69,23 +71,28 @@ you’ll need to reboot. When you run it, it’ll clear the screen instead
 of printing something, but other than that works normally. On macOS, you
 can use the nc -v command as a replacement for
 telnet:
+```
 nc -v example.org 80
+```
 The output is a little different but it works in the same way. On
 most Linux systems, you can install telnet or
 nc from the package manager, usually from packages called
 telnet and netcat.
 
 You’ll get output that looks like this:
+```
 Trying 93.184.216.34...
 Connected to example.org.
 Escape character is &#39;^]&#39;.
+```
 This means that the OS converted the host name
 example.org into the IP address 93.184.216.34
 and was able to connect to it.The line about escape characters is just instructions for
 using obscure telnet features. You can now
 talk to example.org.
 
-2.Requesting Information
+##2.Requesting Information
+---
 Once it’s connected, the browser requests information from the server
 by giving its path, the path being the part of a URL that comes
 after the host name, like /index.html. The structure of the
@@ -127,7 +134,8 @@ telnet (hit Enter twice after typing the two lines of the
 request) and you should get a response from
 example.org.
 
-3.The Server’s Response
+##3.The Server’s Response
+
 The server’s response starts with the line in Figure 3.
 
 ![image](https://github.com/user-attachments/assets/7f4c7586-d198-44ff-91ba-262d1bcbeb54)
@@ -157,6 +165,7 @@ different codes on
 Wikipedia, and new ones do get added here and there.
 After the 200 OK line, the server sends its own headers.
 When I did this, I got these headers (but yours will differ):
+```
 Age: 545933
 Cache-Control: max-age=604800
 Content-Type: text/html; charset=UTF-8
@@ -169,6 +178,7 @@ Vary: Accept-Encoding
 X-Cache: HIT
 Content-Length: 1270
 Connection: close
+```
 There is a lot here, about the information you are
 requesting (Content-Type, Content-Length, and
 Last-Modified), about the server (Server,
@@ -191,7 +201,7 @@ Figure 4: An HTTP request and response
 pair are how a web browser gets web pages from a web
 server.
 
-4.Telnet in Python
+##4.Telnet in Python
 So far we’ve communicated with another computer using
 telnet. But it turns out that telnet is quite
 a simple program, and we can do the same programmatically. It’ll require
@@ -203,9 +213,11 @@ less Python-specific.
 Let’s start with parsing the URL. I’m going to make parsing a URL
 return a URL object, and I’ll put the parsing code into the
 constructor:
+```ruby
 class URL:
     def __init__(self, url):
         # ...
+```
 The __init__ method is Python’s peculiar syntax for
 class constructors, and the self parameter, which you must
 always make the first parameter of any method, is Python’s analog of
@@ -314,7 +326,7 @@ connect takes a single argument, and that argument is a
 pair of a host and a port. This is because different address families
 have different numbers of arguments.
 
-5.Request and Response
+##5.Request and Response
 Now that we have a connection, we make a request to the other server.
 To do so, we send it some data using the send method:
 ```ruby
@@ -333,9 +345,9 @@ how many bytes of data you sent to the other computer; if, say, your
 network connection failed midway through sending the data, you might
 want to know how much you sent before the connection
 failed. There are a few things in this code that have to
-be exactly right. First, it’s very important to use \r\n
+be exactly right. First, it’s very important to use ```ruby\r\n```
 instead of \n for newlines. It’s also essential that you
-put two \r\n newlines at the end, so that you send
+put two ```ruby \r\n``` newlines at the end, so that you send
 that blank line at the end of the request. If you forget that, the other
 computer will keep waiting on you to send that newline, and you’ll keep
 waiting on its response.Computers are endlessly literal-minded.
@@ -453,7 +465,7 @@ Now let’s actually display the text in the response body.
 
 
 
-6.Displaying the HTML
+##6.Displaying the HTML
 The HTML code in the response body defines the content you see in
 your browser window when you go to
 http://example.org/index.html. I’ll be talking much, much
@@ -520,7 +532,7 @@ python3 browser.py http://example.org/
 You should see some short text welcoming you to the official example
 web page. You can also try using it on this chapter!
 
-7.Encrypted Connections
+##7.Encrypted Connections
 So far, our browser supports the http scheme. That’s a
 pretty common scheme. But more and more websites are migrating to the
 https scheme, and many websites require it.
@@ -648,7 +660,7 @@ Here is what it should output for a simple example:
 ```
 
 
-8.Summary
+##8.Summary
 This chapter went from an empty file to a rudimentary web browser
 that can:
 
@@ -667,7 +679,7 @@ but it already has some of the core capabilities of a browser.
 
 
 
-9.Outline
+##9.Outline
 The complete set of functions, classes, and methods in our browser
 should look something like this:
 ```ruby
