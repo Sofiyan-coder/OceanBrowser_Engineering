@@ -6,9 +6,9 @@ A web browser doesn’t just download a web page; it also has to show that page 
 ---
 Desktop and laptop computers run operating systems that provide desktop environments: windows, buttons, and a mouse. So responsibility ends up split: programs control their windows, but the desktop environment controls the screen. Therefore:
 
-    • The program asks for a new window and the desktop environment actually displays it.
-    • The program draws to its window and the desktop environment puts that on the screen.
-    • The desktop environment tells the program about clicks and key presses, and the program        responds and redraws its window.
+• The program asks for a new window and the desktop environment actually displays it.
+• The program draws to its window and the desktop environment puts that on the screen.
+• The desktop environment tells the program about clicks and key presses, and the program        responds and redraws its window.
 Doing all of this by hand is a bit of a drag, so programs usually use a graphical toolkit to simplify these steps. Python comes with a graphical toolkit called Tk in the Python package tkinter. Using it is quite simple:
 ```ruby
 import tkinter
@@ -74,6 +74,8 @@ You ought to see: a rectangle, starting near the top-left corner of the canvas a
 ![image](https://github.com/user-attachments/assets/5d2cb96c-36d5-48fe-8f1b-9c031968b5f4)
 
 Figure 2: The expected example output with a rectangle, circle, and text.
+
+
 Coordinates in Tk refer to x positions from left to right and y positions from top to bottom. In other words, the bottom of the screen has larger y values, the opposite of what you might be used to from math. Play with the coordinates above to figure out what each argument refers to.
 
 3.Laying Out Text
@@ -135,6 +137,7 @@ Scrolling introduces a layer of indirection between page coordinates (this text 
 ![image](https://github.com/user-attachments/assets/8b613542-4454-4b59-8a32-ec20638f596b)
 
 Figure 5: The difference between page and screen coordinates.
+
 Our browser will have the same split. Right now load computes both the position of each character and draws it: layout and rendering. Let’s instead have a layout function to compute and store the position of each character, and a separate draw function to then draw each character based on the stored position. This way, layout can operate with page coordinates and only draw needs to think about screen coordinates.
 
 Let’s start with layout. Instead of calling canvas.create_text on each character, let’s add it to a list, together with its position. Since layout doesn’t need to access anything in Browser, it can be a standalone function:
