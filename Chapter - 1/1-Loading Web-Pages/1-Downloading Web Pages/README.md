@@ -85,7 +85,7 @@ You’ll get output that looks like this:
 ```
 Trying 93.184.216.34...
 Connected to example.org.
-Escape character is &#39;^]&#39;.
+Escape character is ^].
 ```
 This means that the OS converted the host name
 example.org into the IP address 93.184.216.34
@@ -232,7 +232,7 @@ let’s check that, too:
 ```ruby
 class URL:
     def __init__(self, url):
-        self.scheme, url = url.split(&quot;://&quot;, 1)
+        self.scheme, url = url.split("://", 1)
         assert self.scheme == "http"
 ```
 Now we must separate the host from the path. The host comes before
@@ -242,7 +242,7 @@ after it:
 class URL:
     def __init__(self, url):
         # ...
-        if &quot;/&quot; not in url:
+        if "/" not in url:
             url = url + "/"
         self.host, url = url.split("/", 1)
         self.path = "/" + url
