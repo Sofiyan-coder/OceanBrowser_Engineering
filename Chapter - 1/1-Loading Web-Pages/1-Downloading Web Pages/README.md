@@ -233,7 +233,7 @@ let’s check that, too:
 class URL:
     def __init__(self, url):
         self.scheme, url = url.split(&quot;://&quot;, 1)
-        assert self.scheme == &quot;http&quot;
+        assert self.scheme == "http"
 ```
 Now we must separate the host from the path. The host comes before
 the first /, while the path is that slash and everything
@@ -243,9 +243,9 @@ class URL:
     def __init__(self, url):
         # ...
         if &quot;/&quot; not in url:
-            url = url + &quot;/&quot;
-        self.host, url = url.split(&quot;/&quot;, 1)
-        self.path = &quot;/&quot; + url
+            url = url + "/"
+        self.host, url = url.split("/", 1)
+        self.path = "/" + url
 ```
 (When you see a code block with a # ..., like this one,
 that means you’re adding code to an existing method or block.) The
@@ -337,10 +337,10 @@ To do so, we send it some data using the send method:
 class URL:
     def request(self):
         # ...
-        request = &quot;GET {} HTTP/1.0\r\n&quot;.format(self.path)
-        request += &quot;Host: {}\r\n&quot;.format(self.host)
-        request += &quot;\r\n&quot;
-        s.send(request.encode(&quot;utf8&quot;))
+        request = "GET {} HTTP/1.0\r\n".format(self.path)
+        request += "Host: {}\r\n&quot;.format(self.host)
+        request += "\r\n"
+        s.send(request.encode("utf8")
 ```
 The send method just sends the request to the
 server.send
@@ -386,7 +386,7 @@ checking the socket status, yourself.
 class URL:
     def request(self):
         # ...
-        response = s.makefile(&quot;r&quot;, encoding=&quot;utf8&quot;, newline=&quot;\r\n&quot;)
+        response = s.makefile("r", encoding="utf8", newline="\r\n")
 ```
 Here, makefile returns a file-like object containing
 every byte we receive from the server. I am instructing Python to turn
@@ -411,7 +411,7 @@ class URL:
     def request(self):
         # ...
         statusline = response.readline()
-        version, status, explanation = statusline.split(&quot; &quot;, 2)
+        version, status, explanation = statusline.split("", 2)
 ```
 Note that I do not check that the server’s version of HTTP
 is the same as mine; this might sound like a good idea, but there are a
@@ -426,8 +426,8 @@ class URL:
         response_headers = {}
         while True:
             line = response.readline()
-            if line == &quot;\r\n&quot;: break
-            header, value = line.split(&quot;:&quot;, 1)
+            if line == "\r\n": break
+            header, value = line.split(":", 1)
             response_headers[header.casefold()] = value.strip()
 ```
 For the headers, I split each line at the first colon and fill in a
@@ -446,8 +446,8 @@ headers if they are present.
 class URL:
     def request(self):
         # ...
-        assert &quot;transfer-encoding&quot; not in response_headers
-        assert &quot;content-encoding&quot; not in response_headers
+        assert "transfer-encoding" not in response_headers
+        assert "content-encoding" not in response_headers
 ```
 The usual way to send the data, then, is everything after the
 headers:
@@ -498,12 +498,12 @@ function and not the URL class.
 def show(body):
     in_tag = False
     for c in body:
-        if c == &quot;&lt;&quot;:
+        if c == "<":
             in_tag = True
-        elif c == &quot;&gt;&quot;:
+        elif c == ">":
             in_tag = False
         elif not in_tag:
-            print(c, end=&quot;&quot;)
+            print(c, end=" ")
 ```
 This code is pretty complex. It goes through the request body
 character by character, and it has two states: in_tag, when
@@ -524,7 +524,7 @@ def load(url):
 Add the following code to run load from the command
 line:
 ```ruby
-if __name__ == &quot;__main__&quot;:
+if __name__ == "__main__":
     import sys
     load(URL(sys.argv[1]))
 ```
@@ -592,8 +592,8 @@ First, we need to detect which scheme is being used:
 ```ruby
 class URL:
     def __init__(self, url):
-        self.scheme, url = url.split(&quot;://&quot;, 1)
-        assert self.scheme in [&quot;http&quot;, &quot;https&quot;]
+        self.scheme, url = url.split("://", 1)
+        assert self.scheme in ["http","https"]
         # ...
 ```
 (Note that here you’re supposed to replace the existing scheme
@@ -605,9 +605,9 @@ Encrypted HTTP connections usually use port 443 instead of port
 class URL:
     def __init__(self, url):
         # ...
-        if self.scheme == &quot;http&quot;:
+        if self.scheme == "http":
             self.port = 80
-        elif self.scheme == &quot;https&quot;:
+        elif self.scheme == "https":
             self.port = 443
 ```
 We can use that port when creating the socket:
@@ -623,7 +623,7 @@ Next, we’ll wrap the socket with the ssl library:
 class URL:
     def request(self):
         # ...
-        if self.scheme == &quot;https&quot;:
+        if self.scheme == "https":
             ctx = ssl.create_default_context()
             s = ctx.wrap_socket(s, server_hostname=self.host)
         # ...
@@ -644,7 +644,7 @@ class URL:
     def __init__(self, url):
         # ...
         if &quot;:&quot; in self.host:
-            self.host, port = self.host.split(&quot;:&quot;, 1)
+            self.host, port = self.host.split(":", 1)
             self.port = int(port)
 ```
 Custom ports are handy for debugging. Python has a built-in web
